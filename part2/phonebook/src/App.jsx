@@ -3,6 +3,7 @@ import personService from './services/personsS'
 import Persons from "./components/Persons"
 import Filter from "./components/Filter"
 import PersonForm from "./components/PersonForm"
+import Notification from './components/Notification'
 
 
 
@@ -11,6 +12,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [searchPerson, setSearch] = useState('')
+  const [errorMessage, setErrorMessage] = useState(null)
 
   useEffect(() => {
     personService
@@ -28,6 +30,14 @@ const App = () => {
         const changedPerson = { ...personx, number: newNumber }
         personService.update(personx.id, changedPerson).then(response => {
           setPersons(persons.map(p => p.id !== personx.id ? p : response.data))
+          setErrorMessage(`Number of ${newName} changed`)
+          setNewName('')
+          setNewNumber('')
+          setTimeout(() => {setErrorMessage(null)}, 3000)
+        }).catch(() => {
+          setErrorMessage(`Information of ${newName} has been removed from server`)
+          setPersons(persons.filter(p => p.name !== newName))
+          setTimeout(() => {setErrorMessage(null)}, 3000)
         })
       }
     }else{
@@ -39,8 +49,10 @@ const App = () => {
         .create(personObject)
         .then(response => {
           setPersons(persons.concat(response.data))
+          setErrorMessage(`Added ${newName}`)
           setNewName('')
           setNewNumber('')
+          setTimeout(() => {setErrorMessage(null)}, 3000)
         })
     }
   }
@@ -60,6 +72,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={errorMessage} />
       <Filter searchPerson = {searchPerson} handler = {handleSearchChange}/>
       <h2>add a new</h2>
       <PersonForm name = {newName} number = {newNumber} 

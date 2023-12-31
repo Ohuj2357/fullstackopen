@@ -2,7 +2,7 @@
 const Person = ({person, deletePerson, setPersons, persons}) => {
     const personDelete = () =>{
       if (confirm(`Delete ${person.name}`)){
-        deletePerson(person.id).then(()=> setPersons(persons.filter(p => p.id !== person.id))).catch(error => {})
+        deletePerson(person.id).then(()=> setPersons(persons.filter(p => p.id !== person.id))).catch(error => {setPersons(persons.filter(p => p.id !== person.id))})
       }
     }
     return (

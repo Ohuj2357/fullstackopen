@@ -34,11 +34,7 @@ const App = () => {
           setNewName('')
           setNewNumber('')
           setTimeout(() => {setErrorMessage(null)}, 3000)
-        }).catch(() => {
-          setErrorMessage(`Information of ${newName} has been removed from server`)
-          setPersons(persons.filter(p => p.name !== newName))
-          setTimeout(() => {setErrorMessage(null)}, 3000)
-        })
+        }).catch(error => {setErrorMessage(error.response.data.error)})
       }
     }else{
       const personObject = {

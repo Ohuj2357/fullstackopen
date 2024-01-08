@@ -1,4 +1,4 @@
-const Note = require('../models/blog')
+const Blog = require('../models/blog')
 
 const initialBlogs = [
     {
@@ -40,20 +40,21 @@ const initialBlogs = [
 ]
 
 const nonExistingId = async () => {
-  const note = new Note({ content: 'willremovethissoon',
+  const blog = new Blog({ title: 'willremovethissoon',
     author: "Robert C. Martin",
     url: "http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html",
     likes: 2
   })
-  await note.save()
-  await note.remove()
+  await blog.save()
+  await blog.remove()
+  
 
-  return note._id.toString()
+  return blog._id.toString()
 }
 
 const blogsInDb = async () => {
-  const notes = await Note.find({})
-  return notes.map(note => note.toJSON())
+  const blogs = await Blog.find({})
+  return blogs.map(blog => blog.toJSON())
 }
 
 module.exports = {

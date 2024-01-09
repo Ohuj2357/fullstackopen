@@ -3,6 +3,7 @@ const supertest = require('supertest')
 const app = require('../app')
 const bcrypt = require('bcrypt')
 const User = require('../models/user')
+const jwt = require('jsonwebtoken')
 
 const api = supertest(app)
 
@@ -40,6 +41,21 @@ test('has identifier id not _id', async () => {
 
 describe('addition of a blog', () => {
 
+  beforeEach(async () => {
+    await User.deleteMany({})
+
+    const passwordHash = await bcrypt.hash('sekret', 10)
+    const user = new User({ username: 'root', passwordHash })
+
+    await user.save()
+    const userForToken = {
+      username: user.username,
+      id: user._id,
+    }
+  
+    helper.token = jwt.sign(userForToken, process.env.SECRET)
+  })
+
   test('a blog can be added', async () => {
       const newBlog = {
           title: "testi lisays",
@@ -51,6 +67,7 @@ describe('addition of a blog', () => {
       await api
         .post('/api/blogs')
         .send(newBlog)
+        .set({authorization: `Bearer ${helper.token}`})
         .expect(201)
         .expect('Content-Type', /application\/json/)
     
@@ -73,6 +90,7 @@ describe('addition of a blog', () => {
       const response = await api
         .post('/api/blogs')
         .send(newBlog)
+        .set({authorization: `Bearer ${helper.token}`})
         .expect(201)
         .expect('Content-Type', /application\/json/)
     
@@ -91,6 +109,7 @@ describe('addition of a blog', () => {
       await api
         .post('/api/blogs')
         .send(newBlog)
+        .set({authorization: `Bearer ${helper.token}`})
         .expect(400)
         .expect('Content-Type', /application\/json/)
     
@@ -107,44 +126,92 @@ describe('addition of a blog', () => {
       await api
         .post('/api/blogs')
         .send(newBlog)
+        .set({authorization: `Bearer ${helper.token}`})
         .expect(400)
         .expect('Content-Type', /application\/json/)
     
       const blogsAtEnd = await helper.blogsInDb()
       expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
   })
+
+  test('a blog cant be added without token', async () => {
+    const newBlog = {
+        title: "testi lisays",
+        author: "Dijkstra",
+        url: "http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808testi.html",
+        likes: 1
+    }
+  
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(401)
+      .expect('Content-Type', /application\/json/)
+  
+    const blogsAtEnd = await helper.blogsInDb()
+    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
+  })
 })
 
 describe('deletion of a blog', () => {
+
+  beforeEach(async () => {
+    await User.deleteMany({})
+
+    const passwordHash = await bcrypt.hash('sekret', 10)
+    const user = new User({ username: 'root', passwordHash })
+
+    await user.save()
+    const userForToken = {
+      username: user.username,
+      id: user._id,
+    }
+  
+    helper.token = jwt.sign(userForToken, process.env.SECRET)
+
+    const blogObject = new Blog({
+      title: "keksittyblogi",
+      author: "matti meikalainen",
+      url: "https://meikalainen.com/",
+      likes: 5,
+      user: user._id
+    })
+    await blogObject.save()
+    helper.poistettava = blogObject._id.toString()
+    helper.titteli = blogObject.title
+  })
+
   test('succeeds with status code 204 if id is valid', async () => {
     const blogsAtStart = await helper.blogsInDb()
-    const blogToDelete = blogsAtStart[0]
+    const blogToDelete = helper.poistettava
 
     await api
-      .delete(`/api/blogs/${blogToDelete.id}`)
+      .delete(`/api/blogs/${blogToDelete}`)
+      .set({authorization: `Bearer ${helper.token}`})
       .expect(204)
 
     const blogsAtEnd = await helper.blogsInDb()
 
     expect(blogsAtEnd).toHaveLength(
-      helper.initialBlogs.length - 1
+      helper.initialBlogs.length + 1 - 1
     )
 
     const titles = blogsAtEnd.map(r => r.title)
 
-    expect(titles).not.toContain(blogToDelete.title)
+    expect(titles).not.toContain(helper.titteli)
   })
 
   test('status code 400 if id is invalid', async () => {
 
     await api
       .delete(`/api/blogs/nonexistingid`)
+      .set({authorization: `Bearer ${helper.token}`})
       .expect(400)
 
     const blogsAtEnd = await helper.blogsInDb()
 
     expect(blogsAtEnd).toHaveLength(
-      helper.initialBlogs.length
+      helper.initialBlogs.length + 1
     )
   })
 })

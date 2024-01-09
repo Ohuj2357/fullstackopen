@@ -65,9 +65,16 @@ const usersInDb = async () => {
   return users.map(u => u.toJSON())
 }
 
+let token = ''
+let poistettava = null
+let titteli = ''
+
 module.exports = {
   initialBlogs,
   nonExistingId,
   blogsInDb,
   usersInDb,
+  token,
+  poistettava,
+  titteli
 }

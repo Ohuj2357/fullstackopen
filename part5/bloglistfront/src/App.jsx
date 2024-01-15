@@ -64,14 +64,25 @@ const App = () => {
     blogService
       .create(blogObject)
         .then(returnedBlog => {
-        setBlogs(blogs.concat(returnedBlog))
-
-        setTimeout(() => {
-          setErrorMessage(null)
-        }, 5000)
+        setBlogs(blogs.concat({...returnedBlog, user}))
       })
   }
 
+  const addLike = (oldBlog) => {
+    const blogObject = {...oldBlog, likes: oldBlog.likes+1}
+    blogService
+      .update(blogObject)
+        .then(returnedBlog => {
+        setBlogs(blogs.filter(blog => blog.id !== oldBlog.id).concat({...returnedBlog, user: oldBlog.user}))
+      })
+  }
+
+  const removeBlog = (id) => {
+    blogService
+      .deleteBlog(id).then( () => {
+        setBlogs(blogs.filter(blog => blog.id !== id))
+      })
+  }
 
   if (user === null) {
     return (
@@ -112,8 +123,8 @@ const App = () => {
       <Togglable buttonLabel = 'create new blog' ref = {blogFormRef}>
         <BlogForm createBlog={addBlog} setErrorMessage={setErrorMessage}/>
       </Togglable>
-      {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
+      {blogs.toSorted((a, b) => b.likes - a.likes).map(blog =>
+        <Blog key={blog.id} blog={blog} addLike = {addLike} user = {user} removeBlog = {removeBlog}/>
       )}
     </div>
   )

@@ -7,16 +7,19 @@ const BlogForm = ({ createBlog, setErrorMessage }) => {
 
   const addBlog = (event) => {
     event.preventDefault()
-    setErrorMessage(`a new blog ${title} by ${author} added`)
+    
     createBlog({
       title,
       author,
       url,
     })
-
+    setErrorMessage(`a new blog ${title} by ${author} added`)
     setTitle('')
     setAuthor('')
     setUrl('')
+    setTimeout(() => {
+      setErrorMessage(null)
+    }, 5000)
   }
 
   return (

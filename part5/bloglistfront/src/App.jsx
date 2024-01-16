@@ -10,7 +10,7 @@ import blogService from './services/blogs'
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [errorMessage, setErrorMessage] = useState(null)
-  const [username, setUsername] = useState('') 
+  const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
 
@@ -19,7 +19,7 @@ const App = () => {
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
-    )  
+    )
   }, [])
 
   useEffect(() => {
@@ -58,22 +58,22 @@ const App = () => {
     window.localStorage.removeItem('loggedBloglistappUser')
     blogService.setToken(null)
   }
-  
+
   const addBlog = (blogObject) => {
     blogFormRef.current.toggleVisibility()
     blogService
       .create(blogObject)
-        .then(returnedBlog => {
-        setBlogs(blogs.concat({...returnedBlog, user}))
+      .then(returnedBlog => {
+        setBlogs(blogs.concat({ ...returnedBlog, user }))
       })
   }
 
   const addLike = (oldBlog) => {
-    const blogObject = {...oldBlog, likes: oldBlog.likes+1}
+    const blogObject = { ...oldBlog, likes: oldBlog.likes+1 }
     blogService
       .update(blogObject)
-        .then(returnedBlog => {
-        setBlogs(blogs.filter(blog => blog.id !== oldBlog.id).concat({...returnedBlog, user: oldBlog.user}))
+      .then(returnedBlog => {
+        setBlogs(blogs.filter(blog => blog.id !== oldBlog.id).concat({ ...returnedBlog, user: oldBlog.user }))
       })
   }
 
@@ -93,7 +93,7 @@ const App = () => {
         <form onSubmit={handleLogin}>
           <div>
             username
-              <input
+            <input
               type="text"
               value={username}
               name="Username"
@@ -102,7 +102,7 @@ const App = () => {
           </div>
           <div>
             password
-              <input
+            <input
               type="password"
               value={password}
               name="Password"

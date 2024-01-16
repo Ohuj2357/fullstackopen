@@ -5,7 +5,7 @@ const Blog = ({ blog, addLike, user, removeBlog }) => {
 
   const hideWhenVisible = { display: visible ? 'none' : '' }
   const showWhenVisible = { display: visible ? '' : 'none' }
-  const iscreator = { display: (user.id === blog.user.id) ? '' : 'none'}
+  const iscreator = { display: (user.id === blog.user.id) ? '' : 'none' }
 
   const toggleVisibility = () => {
     setVisible(!visible)
@@ -45,7 +45,7 @@ const Blog = ({ blog, addLike, user, removeBlog }) => {
         </div>
       </div>
     </div>
-  )  
+  )
 }
 
 export default Blog

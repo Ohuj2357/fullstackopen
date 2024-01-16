@@ -1,19 +1,19 @@
 const Notification = ({ message }) => {
-    if (message === null) {
-      return null
-    }
-    if (message.includes('wrong')){
-      return (
-        <div className="error">
-          {message}
-        </div>
-      )
-    }
+  if (message === null) {
+    return null
+  }
+  if (message.includes('wrong')){
     return (
-      <div className="added">
+      <div className="error">
         {message}
       </div>
     )
   }
-  
-  export default Notification
+  return (
+    <div className="added">
+      {message}
+    </div>
+  )
+}
+
+export default Notification

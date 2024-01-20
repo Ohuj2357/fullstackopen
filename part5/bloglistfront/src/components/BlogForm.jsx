@@ -34,6 +34,7 @@ const BlogForm = ({ createBlog, setErrorMessage }) => {
             value={title}
             name="Title"
             onChange={({ target }) => setTitle(target.value)}
+            id='title'
           />
         </div>
         <div>
@@ -43,6 +44,7 @@ const BlogForm = ({ createBlog, setErrorMessage }) => {
             value={author}
             name="Author"
             onChange={({ target }) => setAuthor(target.value)}
+            id='author'
           />
         </div>
         <div>
@@ -52,6 +54,7 @@ const BlogForm = ({ createBlog, setErrorMessage }) => {
             value={url}
             name="Url"
             onChange={({ target }) => setUrl(target.value)}
+            id='url'
           />
         </div>
         <button type="submit">create</button>

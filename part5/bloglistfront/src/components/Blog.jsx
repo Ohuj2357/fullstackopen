@@ -21,10 +21,10 @@ const Blog = ({ blog, addLike, user, removeBlog }) => {
   }
 
   return (
-    <div style = {blogStyle}>
+    <div style = {blogStyle} className='blog'>
       <div style={hideWhenVisible} className='short'>
         <div>
-          {blog.title} {blog.author} <button onClick={toggleVisibility}>view</button>
+          {blog.title} {blog.author} <button onClick={toggleVisibility} className='view'>view</button>
         </div>
       </div>
       <div style={showWhenVisible} className='long'>
@@ -35,7 +35,7 @@ const Blog = ({ blog, addLike, user, removeBlog }) => {
           {blog.url}
         </div>
         <div>
-          likes {blog.likes}  <button onClick = {() => addLike(blog)}>like</button>
+          likes {blog.likes}  <button onClick = {() => addLike(blog)} id = 'likebutton'>like</button>
         </div>
         <div>
           {blog.user.name}

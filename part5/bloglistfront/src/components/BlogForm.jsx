@@ -57,7 +57,7 @@ const BlogForm = ({ createBlog, setErrorMessage }) => {
             id='url'
           />
         </div>
-        <button type="submit">create</button>
+        <button type="submit" id ='blogsubmitbutton'>create</button>
       </form>
     </div>
   )
